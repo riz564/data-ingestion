@@ -3,19 +3,24 @@ package storage
 import (
 	"context"
 	"log"
+	"os"
 
 	"data-ingestion/model"
 
 	"cloud.google.com/go/firestore"
+	"google.golang.org/api/option"
 )
 
-type FirestoreClient interface {
-	Collection(string) *firestore.CollectionRef
-	Close() error
-}
+func StorePosts(ctx context.Context, posts []model.Post) error {
+	projectID := os.Getenv("GCP_PROJECT_ID")
+	credsPath := os.Getenv("GOOGLE_APPLICATION_CREDENTIALS")
 
-func StorePostsWithClient(ctx context.Context, client FirestoreClient, posts []model.Post) error {
+	client, err := firestore.NewClient(ctx, projectID, option.WithCredentialsFile(credsPath))
+	if err != nil {
+		return err
+	}
 	defer client.Close()
+
 	for _, post := range posts {
 		_, _, err := client.Collection("posts").Add(ctx, post)
 		if err != nil {
