@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  data-ingestion:
+    build: .
+    environment:
+      - GCP_PROJECT_ID=data-ingestion-demo-463304
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/data-ingestion-demo-463304-faacfba73197.json
+    volumes:
+      - ./data-ingestion-demo-463304-faacfba73197.json:/app/data-ingestion-demo-463304-faacfba73197.json:ro
+    # Uncomment below to see logs in real time
+    # tty: true
